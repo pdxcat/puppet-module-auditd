@@ -2,6 +2,8 @@ class auditd {
   
   package { 'auditd':
     ensure => installed,
+    name   => $auditd::params::package,
+    before => File['auditd.conf'],
   }
 
   service { 'auditd':
@@ -16,6 +18,7 @@ class auditd {
     mode    => '0640',
     owner   => 'root',
     group   => 'root',
+    notify  => Service['auditd'],
   }
 
   file { 'audit.rules':
@@ -24,5 +27,6 @@ class auditd {
     mode    => '0640',
     owner   => 'root',
     group   => 'root',
+    notify  => Service['auditd'],
   }
 }
