@@ -1,5 +1,6 @@
 class auditd {
   
+  include auditd::params
   package { 'auditd':
     ensure => installed,
     name   => $auditd::params::package,
