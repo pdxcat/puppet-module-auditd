@@ -1,4 +1,7 @@
-class auditd {
+class auditd (
+  $auditd_service_ensure = 'running',
+  $auditd_service_enable = true,
+){
 
   include auditd::params
 
@@ -9,11 +12,11 @@ class auditd {
   }
 
   service { 'auditd':
-    ensure  => running,
-    enable  => true,
+    ensure  => $auditd_service_ensure,
+    enable  => $auditd_service_enable,
     require => Package['auditd'],
   }
-  
+
   file { 'auditd.conf':
     path    => '/etc/audit/auditd.conf',
     content => template('auditd/auditd.conf.erb'),
@@ -30,5 +33,12 @@ class auditd {
     owner   => 'root',
     group   => 'root',
     notify  => Service['auditd'],
+  }
+
+  if ( $::lsbdistcodename in ['jaunty', 'lucid'] ) {
+    file { '/sbin/audispd':
+      mode    => '0750',
+      require => Package['auditd'],
+    }
   }
 }
